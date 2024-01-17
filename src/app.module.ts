@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -12,11 +13,11 @@ import { UsersModule } from './users/users.module';
   TypeOrmModule.forRoot({
     type: 'postgres',
     database: process.env.DATABASE_NAME,
-    port: 32768,
+    port: +process.env.DATABASE_PORT,
     host: process.env.DATABASE_HOST,
     username: process.env.DATABASE_USERNAME,
-    password: String(process.env.DATABASE_PASSWORD),
-    entities: [],
+    password: process.env.DATABASE_PASSWORD,
+    entities: ['dist/**/*/entity.js'],
   }),
   UsersModule,
   AuthModule,
@@ -24,4 +25,6 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
